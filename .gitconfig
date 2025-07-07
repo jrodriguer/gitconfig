@@ -3,7 +3,6 @@
 	email = 
 
 [alias]
-	# add conflicted file on merge
 	add-unmerged = "!f() { git ls-files --unmerged | cut -f2 | sort -u ; }; git add `f`"
 	ba = branch -a
 	bm = branch --merged
@@ -14,16 +13,32 @@
 	ci = commit -m
 	df = diff
 	dl-merged = git branch --merged master | grep -v '^[ *]*master$' | xargs git branch -d
-	# edit conflicted file on merge
 	edit-unmerged = "!f() { git ls-files --unmerged | cut -f2 | sort -u ; }; vim `f`"
-	hist = log --pretty=format:\"%Cgreen%h %Creset%cd %Cblue[%cn] %Creset%s%C(yellow)%d%C(reset)\" --graph --date=relative --decorate --all
 	mg = merge
-	llog = log --graph --name-status --pretty=format:\"%C(red)%h %C(reset)(%cd) %C(green)%an %Creset%s %C(yellow)%d%Creset\" --date=relative
 	open = "!hub browse"
 	ps = "!git push origin $(git rev-parse --abbrev-ref HEAD)"
 	pl = "!git pull origin $(git rev-parse --abbrev-ref HEAD)"
 	rb = rebase
 	s = status
+
+  # ---- Visualization ----
+  # Compact (1 line per ci) 
+  lg = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
+  # History details with absolutes dates
+  dlog = log --graph --pretty=format:'%C(yellow)%h%Creset %C(cyan)[%ad]%Creset %Cgreen%an%Creset%C(auto)%d%Creset %n         %s%n' --date=iso
+  # Minimal (--oneline upgrade)
+  adog = log --all --decorate --oneline --graph
+  # History with modifies files
+  flog = log --graph --pretty=format:'%C(yellow)%h%Creset -%C(auto)%d%Creset %s %Cgreen(%cr)%Creset' --stat
+  # Special for mg's
+  tlog = log --graph --pretty=format:'%C(auto)%h %s %C(cyan)(%cr) %C(bold red)%d%Creset' --topo-order
+ 	# History with authors and changes
+  hist = log --pretty=format:'%C(green)%h %C(cyan)%ad %C(yellow)[%an]%Creset %s %C(auto)%d%Creset' --graph --date=relative --all
+ 	# With last commits (for cleaner)
+  branches = for-each-ref --sort=-committerdate --format='%(color:cyan)%(authordate:relative) %(color:white)%(refname:short)%(color:reset) - %(contents:subject) %(color:yellow)%(objectname:short)' refs/heads/
+  
+	undoci = reset HEAD~
+
 [color]
 	status = auto
 	diff = auto
